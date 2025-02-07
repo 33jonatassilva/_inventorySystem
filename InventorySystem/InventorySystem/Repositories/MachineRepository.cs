@@ -13,6 +13,7 @@ public class MachineRepository : IMachineRepository
 {
     
     private readonly AppDbContext _context;
+    private IMachineRepository _machineRepositoryImplementation;
 
     public MachineRepository(AppDbContext context)
     {
