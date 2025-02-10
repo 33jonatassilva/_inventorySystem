@@ -9,11 +9,11 @@ namespace InventorySystem.Controllers;
 
 [ApiController]
 [Route("inventory-system/api/users")]
-public class MachineControllers : ControllerBase
+public class MachineController : ControllerBase
 {
     private readonly IMachineRepository _repository;
 
-    public MachineControllers(IMachineRepository repository)
+    public MachineController(IMachineRepository repository)
     {
         _repository = repository;
     }
@@ -28,6 +28,7 @@ public class MachineControllers : ControllerBase
             Description = machineDto.Description,
             RamMemory = machineDto.RamMemory,
             Processor = machineDto.Processor,
+            Tag = machineDto.Tag,
             RomMemory = machineDto.RomMemory,
             UserId = machineDto.UserId
         };
@@ -38,23 +39,21 @@ public class MachineControllers : ControllerBase
     }
 
 
-
     [HttpGet]
     [Route("get-machine")]
-    public async Task<IActionResult> GetByIdAsync(Guid id)
+
+    public async Task<IActionResult> GetMachineAsync([FromQuery] Guid? machineId)
     {
-        return Ok(await _repository.GetByIdAsync(id));
-    }
-
-
-    [HttpGet]
-    [Route("get-all-machines")]
-
-    public async Task<IActionResult> GetAllAsync()
-    {
+        if (machineId.HasValue)
+        {
+            var machine = await _repository.GetByIdAsync(machineId.Value);
+            return Ok(machine);
+        }
+        
         var machines = await _repository.GetAllAsync();
         return Ok(machines);
     }
+    
 
 
     [HttpPut]
@@ -67,6 +66,7 @@ public class MachineControllers : ControllerBase
         machine.Description = machineDto.Description;
         machine.RamMemory = machineDto.RamMemory;
         machine.Processor = machineDto.Processor;
+        machine.Tag = machineDto.Tag;
         machine.RomMemory = machineDto.RomMemory;
         machine.UserId = machineDto.UserId;
         

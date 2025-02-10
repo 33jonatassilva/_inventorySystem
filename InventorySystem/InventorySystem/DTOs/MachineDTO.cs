@@ -11,6 +11,8 @@ public class MachineDTO
     
     public string Processor { get; set; }
     
+    public int Tag { get; set; }
+    
     public int RomMemory { get; set; }
     
     public Guid? UserId { get; set; }

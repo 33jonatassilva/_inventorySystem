@@ -1,7 +1,6 @@
 ﻿using InventorySystem.DTOs;
 using InventorySystem.Models;
 using InventorySystem.Repositories.Interfaces;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.Controllers;
@@ -34,26 +33,41 @@ public class UserController : ControllerBase
         };
 
         await _userRepository.AddUserAsync(user);
-        return Ok(user);
-    }
-
-
-    [HttpGet]
-    [Route("get-all-users")]
-    public async Task<IActionResult> GetAllAsync()
-    {
-        var users = await _userRepository.GetUsersAsync();
-        return Ok(users);
         
+        return Ok(userDto);
     }
+
 
 
     [HttpGet]
     [Route("get-user")]
-    public async Task<IActionResult> GetByIdAsync(Guid id)
+
+    public async Task<IActionResult> GetUserAsync([FromQuery] Guid? id)
     {
-        var user = await _userRepository.GetUserByIdAsync(id);
-        return Ok(user);
+        if (id.HasValue)
+        {
+            var user = await _userRepository.GetUserByIdAsync(id.Value);
+            return Ok(new UserDTO()
+            {
+                Name = user.Name,
+                Active = user.Active,
+                AssignTerm = user.AssignTerm,
+                OnboardDate = user.OnboardDate,
+                Email = user.Email,
+                MachineId = user.MachineId
+            });
+        }
+        
+        var users = await _userRepository.GetUsersAsync();
+        return Ok(users.Select(x => new UserDTO()
+        {
+            Name = x.Name,
+            Active = x.Active,
+            AssignTerm = x.AssignTerm,
+            OnboardDate = x.OnboardDate,
+            Email = x.Email,
+            MachineId = x.MachineId
+        }));
     }
 
     [HttpPut]

@@ -17,6 +17,4 @@ public class UserDTO
     public string Password { get; set; }
     
     public Guid? MachineId { get; set; }
-    
-    public Machine Machine { get; set; }
 }
